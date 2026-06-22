@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import useAuth from '../../../../hooks/useAuth'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
+import LoadingSpinner from '../../../../components/LoadingSpinner'
 
 const BookingRequests = () => {
   const { user } = useAuth()
@@ -43,10 +44,7 @@ const BookingRequests = () => {
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[status]}`
   }
 
-  if (loading) {
-    return <p className="text-muted text-sm">Loading booking requests...</p>
-  }
-
+  if (loading) return <LoadingSpinner text="Loading requests..." />
   return (
     <div>
       <span className="font-mono text-xs uppercase tracking-widest text-clay">— Requests</span>

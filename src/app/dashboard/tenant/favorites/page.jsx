@@ -5,6 +5,7 @@ import Link from 'next/link'
 import useAuth from '../../../../hooks/useAuth'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
+import LoadingSpinner from '../../../../components/LoadingSpinner'
 
 const Favorites = () => {
   const { user } = useAuth()
@@ -35,9 +36,8 @@ const Favorites = () => {
     }
   }
 
-  if (loading) {
-    return <p className="text-muted text-sm">Loading favorites...</p>
-  }
+    if (loading) return <LoadingSpinner text="Loading favorites..." />
+  
 
   return (
     <div>

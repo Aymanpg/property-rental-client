@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
+import LoadingSpinner from '../../../../components/LoadingSpinner'
 const AllUsers = () => {
   const axiosSecure = useAxiosSecure()
   const [users, setUsers] = useState([])
@@ -38,7 +39,7 @@ const AllUsers = () => {
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[role] || ''}`
   }
 
-  if (loading) return <p className="text-muted text-sm">Loading users...</p>
+  if (loading) return <LoadingSpinner text="Loading users..." />
 
   return (
     <div>

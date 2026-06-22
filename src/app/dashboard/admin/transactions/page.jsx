@@ -1,5 +1,5 @@
 "use client"
-
+import LoadingSpinner from '../../../../components/LoadingSpinner'
 import { useState, useEffect } from 'react'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 
@@ -15,7 +15,7 @@ const Transactions = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="text-muted text-sm">Loading transactions...</p>
+  if (loading) return <LoadingSpinner text="Loading transactions..." />
 
   return (
     <div>

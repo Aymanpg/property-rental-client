@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
-
+import LoadingSpinner from '../../../../components/LoadingSpinner'
 const AllBookings = () => {
   const axiosSecure = useAxiosSecure()
   const [bookings, setBookings] = useState([])
@@ -26,8 +26,7 @@ const AllBookings = () => {
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[status] || ''}`
   }
 
-  if (loading) return <p className="text-muted text-sm">Loading bookings...</p>
-
+  if (loading) return <LoadingSpinner text="Loading bookings..." />
   return (
     <div>
       <span className="font-mono text-xs uppercase tracking-widest text-clay">— Monitor</span>

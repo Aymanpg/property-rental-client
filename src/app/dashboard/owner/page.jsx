@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import useAuth from '../../../hooks/useAuth'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import LoadingSpinner from '../../../components/LoadingSpinner'
 
 const OwnerHome = () => {
   const { user } = useAuth()
@@ -67,9 +68,8 @@ const OwnerHome = () => {
     fetchData()
   }, [user, axiosSecure])
 
-  if (loading) {
-    return <p className="text-muted text-sm">Loading analytics...</p>
-  }
+  if (loading) return <LoadingSpinner text="Loading analytics..." />
+
 
   return (
     <div>

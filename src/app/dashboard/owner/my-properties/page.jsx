@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import useAuth from '../../../../hooks/useAuth'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
+import LoadingSpinner from '../../../../components/LoadingSpinner'
+import { useRouter } from 'next/navigation'
 
 const MyProperties = () => {
   const { user } = useAuth()
@@ -11,6 +13,7 @@ const MyProperties = () => {
   const [properties, setProperties] = useState([])
   const [loading, setLoading] = useState(true)
   const [feedbackModal, setFeedbackModal] = useState(null)
+  const router = useRouter()
 
   const fetchProperties = () => {
     if (!user?.email) return
@@ -45,9 +48,7 @@ const MyProperties = () => {
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[status]}`
   }
 
-  if (loading) {
-    return <p className="text-muted text-sm">Loading your properties...</p>
-  }
+  if (loading) return <LoadingSpinner text="Loading properties..."/>
 
   return (
     <div>
@@ -91,9 +92,10 @@ const MyProperties = () => {
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
                       <button
+                        onClick={() => router.push(`/dashboard/owner/update-property/${property._id}`)}
                         className="text-clay text-xs font-medium hover:underline"
                       >
-                        Update
+                         Update
                       </button>
                       <button
                         onClick={() => handleDelete(property._id)}
