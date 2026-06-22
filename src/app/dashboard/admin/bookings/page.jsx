@@ -40,13 +40,24 @@ const AllBookings = () => {
             <div key={booking._id} className="border border-line rounded-sm p-5 hover:border-ink transition-colors">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                {/* Property Info */}
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-wide text-clay mb-1">Property</p>
-                  <p className="font-medium text-ink">{booking.propertyTitle}</p>
-                  <p className="text-sm text-muted mt-0.5">{booking.propertyLocation}</p>
-                  <p className="text-ink font-semibold mt-1">${booking.amount}</p>
-                </div>
+                {/* Property Info section এ image যোগ করুন */}
+<div>
+  <p className="font-mono text-[11px] uppercase tracking-wide text-clay mb-1">Property</p>
+  <div className="flex items-center gap-3">
+    {booking.propertyImage && (
+      <img
+        src={booking.propertyImage}
+        alt={booking.propertyTitle}
+        style={{ width: '50px', height: '50px', minWidth: '50px', objectFit: 'cover', borderRadius: '4px' }}
+      />
+    )}
+    <div>
+      <p className="font-medium text-ink">{booking.propertyTitle}</p>
+      <p className="text-sm text-muted mt-0.5">{booking.propertyLocation}</p>
+      <p className="text-ink font-semibold mt-1">${booking.amount}</p>
+    </div>
+  </div>
+</div>
 
                 {/* Tenant Info */}
                 <div>

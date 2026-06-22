@@ -9,14 +9,19 @@ import LoadingSpinner from '../../../../components/LoadingSpinner'
 const BookingRequests = () => {
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
+
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchBookings = () => {
     if (!user?.email) return
-    axiosSecure.get(`/bookings/owner/${user.email}`)
-      .then(res => setBookings(res.data))
-      .catch(err => console.log('Error fetching bookings:', err.message))
+
+    axiosSecure
+      .get(`/bookings/owner/${user.email}`)
+      .then((res) => setBookings(res.data))
+      .catch((err) =>
+        console.log('Error fetching bookings:', err.message)
+      )
       .finally(() => setLoading(false))
   }
 
@@ -27,7 +32,10 @@ const BookingRequests = () => {
 
   const handleStatusChange = async (id, bookingStatus) => {
     try {
-      await axiosSecure.patch(`/bookings/${id}/status`, { bookingStatus })
+      await axiosSecure.patch(`/bookings/${id}/status`, {
+        bookingStatus,
+      })
+
       toast.success(`Booking ${bookingStatus}`)
       fetchBookings()
     } catch (error) {
@@ -39,63 +47,168 @@ const BookingRequests = () => {
     const styles = {
       pending: 'bg-moss/20 text-moss',
       approved: 'bg-clay/15 text-clay',
-      rejected: 'bg-red-100 text-red-700'
+      rejected: 'bg-red-100 text-red-700',
     }
+
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[status]}`
   }
 
-  if (loading) return <LoadingSpinner text="Loading requests..." />
+  if (loading) {
+    return <LoadingSpinner text="Loading requests..." />
+  }
+
   return (
     <div>
-      <span className="font-mono text-xs uppercase tracking-widest text-clay">— Requests</span>
-      <h1 className="font-display italic text-3xl text-ink mt-1 mb-8">Booking Requests</h1>
+      <span className="font-mono text-xs uppercase tracking-widest text-clay">
+        — Requests
+      </span>
+
+      <h1 className="font-display italic text-3xl text-ink mt-1 mb-8">
+        Booking Requests
+      </h1>
 
       {bookings.length === 0 ? (
         <div className="border border-dashed border-line rounded-sm py-16 text-center">
-          <p className="text-muted text-sm">No booking requests yet.</p>
+          <p className="text-muted text-sm">
+            No booking requests yet.
+          </p>
         </div>
       ) : (
         <div className="border border-line rounded-sm overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-ink text-paper">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Tenant</th>
-                <th className="text-left px-4 py-3 font-medium">Property</th>
-                <th className="text-left px-4 py-3 font-medium">Amount</th>
-                <th className="text-left px-4 py-3 font-medium">Status</th>
-                <th className="text-left px-4 py-3 font-medium">Actions</th>
+                <th className="text-left px-4 py-3 font-medium">
+                  Tenant
+                </th>
+                <th className="text-left px-4 py-3 font-medium">
+                  Property
+                </th>
+                <th className="text-left px-4 py-3 font-medium">
+                  Amount
+                </th>
+                <th className="text-left px-4 py-3 font-medium">
+                  Status
+                </th>
+                <th className="text-left px-4 py-3 font-medium">
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody>
               {bookings.map((booking) => (
-                <tr key={booking._id} className="border-t border-line">
+                <tr
+                  key={booking._id}
+                  className="border-t border-line"
+                >
+                  {/* Tenant Info */}
                   <td className="px-4 py-3">
-                    <p className="text-ink font-medium">{booking.tenantName}</p>
-                    <p className="text-xs text-muted">{booking.tenantEmail}</p>
+                    <div className="flex items-center gap-3">
+                      {booking.tenantPhoto ? (
+                        <img
+                          src={booking.tenantPhoto}
+                          alt={booking.tenantName}
+                          className="w-10 h-10 rounded-full object-cover border border-line shrink-0"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-clay/20 text-clay flex items-center justify-center text-sm font-semibold shrink-0">
+                          {booking.tenantName
+                            ?.charAt(0)
+                            .toUpperCase()}
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="text-ink font-medium">
+                          {booking.tenantName}
+                        </p>
+
+                        <p className="text-xs text-muted">
+                          {booking.tenantEmail}
+                        </p>
+
+                        {booking.moveInDate && (
+                          <p className="text-xs text-clay mt-0.5">
+                            📅 Move-in:{' '}
+                            {new Date(
+                              booking.moveInDate
+                            ).toLocaleDateString()}
+                          </p>
+                        )}
+
+                        {booking.moveOutDate && (
+                          <p className="text-xs text-clay">
+                            📅 Move-out:{' '}
+                            {new Date(
+                              booking.moveOutDate
+                            ).toLocaleDateString()}
+                          </p>
+                        )}
+
+                        {booking.contactNumber && (
+                          <p className="text-xs text-muted">
+                            📞 {booking.contactNumber}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-muted max-w-[180px] truncate">{booking.propertyTitle}</td>
-                  <td className="px-4 py-3 text-ink">${booking.amount}</td>
-                  <td className="px-4 py-3">
-                    <span className={statusBadge(booking.bookingStatus)}>{booking.bookingStatus}</span>
+
+                  {/* Property */}
+                  <td className="px-4 py-3 text-muted max-w-[220px] truncate">
+                    {booking.propertyTitle}
                   </td>
+
+                  {/* Amount */}
+                  <td className="px-4 py-3 text-ink">
+                    ${booking.amount}
+                  </td>
+
+                  {/* Status */}
                   <td className="px-4 py-3">
-                    {booking.bookingStatus === 'pending' ? (
+                    <span
+                      className={statusBadge(
+                        booking.bookingStatus
+                      )}
+                    >
+                      {booking.bookingStatus}
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-3">
+                    {booking.bookingStatus ===
+                    'pending' ? (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleStatusChange(booking._id, 'approved')}
+                          onClick={() =>
+                            handleStatusChange(
+                              booking._id,
+                              'approved'
+                            )
+                          }
                           className="px-3 py-1.5 bg-clay text-paper text-xs font-medium rounded-sm hover:bg-clay-dark transition-colors"
                         >
                           Approve
                         </button>
+
                         <button
-                          onClick={() => handleStatusChange(booking._id, 'rejected')}
+                          onClick={() =>
+                            handleStatusChange(
+                              booking._id,
+                              'rejected'
+                            )
+                          }
                           className="px-3 py-1.5 border border-line text-xs font-medium rounded-sm hover:border-ink transition-colors"
                         >
                           Reject
                         </button>
                       </div>
                     ) : (
-                      <span className="text-xs text-muted">No actions</span>
+                      <span className="text-xs text-muted">
+                        No actions
+                      </span>
                     )}
                   </td>
                 </tr>

@@ -16,7 +16,10 @@ const BookingModal = ({ property, onClose }) => {
   })
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
 
   const handleContinueToPayment = (e) => {
@@ -27,21 +30,30 @@ const BookingModal = ({ property, onClose }) => {
       return
     }
 
-    // Store booking draft in sessionStorage to pass to payment page
     const bookingDraft = {
       propertyId: property._id,
       propertyTitle: property.title,
-      propertyLocation: property.location,
+      propertyLocation: property.location || '',
+      propertyImage: property.images?.[0] || '',
+
       tenantEmail: user.email,
-      tenantName: dbUser?.name || user.displayName,
+      tenantName: dbUser?.name || user.displayName || '',
+      tenantPhoto: dbUser?.photo || user.photoURL || '',
+
       ownerEmail: property.ownerEmail,
+
       moveInDate: formData.moveInDate,
       contactNumber: formData.contactNumber,
       additionalNotes: formData.additionalNotes,
+
       amount: property.rent
     }
 
-    sessionStorage.setItem('bookingDraft', JSON.stringify(bookingDraft))
+    sessionStorage.setItem(
+      'bookingDraft',
+      JSON.stringify(bookingDraft)
+    )
+
     router.push('/payment')
   }
 
@@ -49,14 +61,31 @@ const BookingModal = ({ property, onClose }) => {
     <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50 px-6">
       <div className="bg-paper rounded-sm p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-display italic text-2xl text-ink">Book this property</h3>
-          <button onClick={onClose} className="text-muted hover:text-ink text-xl leading-none">✕</button>
-        </div>
-        <p className="text-sm text-muted mb-5">{property.title}</p>
+          <h3 className="font-display italic text-2xl text-ink">
+            Book this property
+          </h3>
 
-        <form onSubmit={handleContinueToPayment} className="space-y-4">
+          <button
+            onClick={onClose}
+            className="text-muted hover:text-ink text-xl leading-none"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p className="text-sm text-muted mb-5">
+          {property.title}
+        </p>
+
+        <form
+          onSubmit={handleContinueToPayment}
+          className="space-y-4"
+        >
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">Move-in Date</label>
+            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">
+              Move-in Date
+            </label>
+
             <input
               type="date"
               name="moveInDate"
@@ -68,7 +97,10 @@ const BookingModal = ({ property, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">Contact Number</label>
+            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">
+              Contact Number
+            </label>
+
             <input
               type="tel"
               name="contactNumber"
@@ -81,7 +113,10 @@ const BookingModal = ({ property, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">Additional Notes</label>
+            <label className="block text-xs font-mono uppercase tracking-wide text-muted mb-1.5">
+              Additional Notes
+            </label>
+
             <textarea
               name="additionalNotes"
               rows={3}
@@ -94,9 +129,15 @@ const BookingModal = ({ property, onClose }) => {
 
           <div className="pt-2 border-t border-line">
             <div className="flex justify-between text-sm mb-4 pt-3">
-              <span className="text-muted">Booking fee</span>
-              <span className="text-ink font-semibold">${property.rent}</span>
+              <span className="text-muted">
+                Booking fee
+              </span>
+
+              <span className="text-ink font-semibold">
+                ${property.rent}
+              </span>
             </div>
+
             <button
               type="submit"
               className="w-full py-3 bg-ink text-paper text-sm font-semibold rounded-sm hover:bg-clay transition-colors"

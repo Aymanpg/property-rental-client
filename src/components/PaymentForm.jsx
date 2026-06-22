@@ -13,9 +13,13 @@ const cardStyle = {
       fontSize: '15px',
       color: '#0F2818',
       fontFamily: '"Inter", sans-serif',
-      '::placeholder': { color: '#9CA3AF' },
+      '::placeholder': {
+        color: '#9CA3AF',
+      },
     },
-    invalid: { color: '#dc2626' },
+    invalid: {
+      color: '#dc2626',
+    },
   },
 }
 
@@ -31,13 +35,20 @@ const PaymentForm = ({ bookingDraft }) => {
 
   useEffect(() => {
     if (!bookingDraft?.amount) return
-    axiosSecure.post('/payments/create-intent', { amount: bookingDraft.amount })
-      .then(res => setClientSecret(res.data.clientSecret))
-      .catch(err => console.log('Error creating payment intent:', err.message))
+
+    axiosSecure
+      .post('/payments/create-intent', {
+        amount: bookingDraft.amount,
+      })
+      .then((res) => setClientSecret(res.data.clientSecret))
+      .catch((err) =>
+        console.log('Error creating payment intent:', err.message)
+      )
   }, [bookingDraft, axiosSecure])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     if (!stripe || !elements || !clientSecret) return
 
     setProcessing(true)
@@ -56,15 +67,16 @@ const PaymentForm = ({ bookingDraft }) => {
       return
     }
 
-    const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card,
-        billing_details: {
-          name: bookingDraft.tenantName,
-          email: bookingDraft.tenantEmail,
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card,
+          billing_details: {
+            name: bookingDraft.tenantName,
+            email: bookingDraft.tenantEmail,
+          },
         },
-      },
-    })
+      })
 
     if (confirmError) {
       setCardError(confirmError.message)
@@ -78,33 +90,51 @@ const PaymentForm = ({ bookingDraft }) => {
           propertyId: bookingDraft.propertyId,
           propertyTitle: bookingDraft.propertyTitle,
           propertyLocation: bookingDraft.propertyLocation,
+
+          // ✅ FIX: property image added safely
+          propertyImage: bookingDraft.propertyImage || '',
+
           tenantEmail: bookingDraft.tenantEmail,
           tenantName: bookingDraft.tenantName,
+          tenantPhoto: bookingDraft.tenantPhoto,
+
           ownerEmail: bookingDraft.ownerEmail,
+
           moveInDate: bookingDraft.moveInDate,
           contactNumber: bookingDraft.contactNumber,
           additionalNotes: bookingDraft.additionalNotes,
+
           amount: bookingDraft.amount,
-          paymentStatus: 'paid'
+          paymentStatus: 'paid',
         })
 
         await axiosSecure.post('/payments/save-transaction', {
           transactionId: paymentIntent.id,
+
           propertyId: bookingDraft.propertyId,
           propertyTitle: bookingDraft.propertyTitle,
+
           tenantEmail: bookingDraft.tenantEmail,
           tenantName: bookingDraft.tenantName,
+
           ownerEmail: bookingDraft.ownerEmail,
           ownerName: bookingDraft.ownerEmail,
+
           amount: bookingDraft.amount,
-          bookingId: bookingRes.data._id
+          bookingId: bookingRes.data._id,
         })
 
         sessionStorage.removeItem('bookingDraft')
+
         toast.success('Booking confirmed!')
+
         router.push('/payment/success')
       } catch (error) {
-        toast.error('Payment succeeded but booking failed to save. Contact support.')
+        console.error(error)
+
+        toast.error(
+          'Payment succeeded but booking failed to save. Contact support.'
+        )
       }
     }
 

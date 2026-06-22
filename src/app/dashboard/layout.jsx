@@ -16,6 +16,7 @@ const ownerLinks = [
   { href: '/dashboard/owner/add-property', label: 'Add Property' },
   { href: '/dashboard/owner/my-properties', label: 'My Properties' },
   { href: '/dashboard/owner/booking-requests', label: 'Booking Requests' },
+  { href: '/dashboard/owner/profile', label: 'Profile' },
 ]
 
 const adminLinks = [
