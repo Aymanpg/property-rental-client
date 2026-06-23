@@ -106,18 +106,35 @@ const BookingRequests = () => {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {booking.tenantPhoto ? (
-                        <img
-                          src={booking.tenantPhoto}
-                          alt={booking.tenantName}
-                          className="w-10 h-10 rounded-full object-cover border border-line shrink-0"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-clay/20 text-clay flex items-center justify-center text-sm font-semibold shrink-0">
-                          {booking.tenantName
-                            ?.charAt(0)
-                            .toUpperCase()}
-                        </div>
-                      )}
+  <img
+    src={booking.tenantPhoto}
+    alt={booking.tenantName}
+    style={{
+      width: '60px',
+                          height: '60px',
+                          minWidth: '60px',
+                          maxWidth: '60px',
+                          minHeight: '60px',
+                          maxHeight: '60px',
+                          objectFit: 'cover',
+                          borderRadius: '4px',
+    }}
+  />
+) : (
+  <div style={{
+    width: '60px',
+                          height: '60px',
+                          backgroundColor: '#E3E8E5',
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '11px',
+                          color: '#5C6B61',
+  }}>
+    {booking.tenantName?.charAt(0).toUpperCase()}
+  </div>
+)}
 
                       <div>
                         <p className="text-ink font-medium">

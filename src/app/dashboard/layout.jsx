@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import useAuth from '../../hooks/useAuth'
+import useAxiosSecure from '../../hooks/useAxiosSecure'
 
 const tenantLinks = [
   { href: '/dashboard/tenant/bookings', label: 'My Bookings' },
@@ -28,15 +29,32 @@ const adminLinks = [
 
 const DashboardLayout = ({ children }) => {
   const { user, dbUser, loading } = useAuth()
+  const axiosSecure = useAxiosSecure()
+
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // ✅ NEW: unread notification count state
+  const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login')
     }
   }, [loading, user, router])
+
+  // ✅ NEW: fetch notifications
+  useEffect(() => {
+    if (!user?.email) return
+
+    axiosSecure.get(`/notifications/${user.email}`)
+      .then(res => {
+        const unread = res.data.filter(n => !n.isRead).length
+        setUnreadCount(unread)
+      })
+      .catch(err => console.log('Notification error:', err.message))
+  }, [user, axiosSecure])
 
   if (loading || !user) {
     return (
@@ -67,10 +85,20 @@ const DashboardLayout = ({ children }) => {
       {/* Sidebar */}
       <aside className={`w-full md:w-64 bg-ink shrink-0 ${sidebarOpen ? 'block' : 'hidden'} md:block`}>
         <div className="p-5">
+
           <p className="font-mono text-[11px] uppercase tracking-widest text-paper/40 mb-1 hidden md:block">
             {dbUser?.role} dashboard
           </p>
-          <h2 className="font-display italic text-xl text-paper mb-5 hidden md:block">Welcome back</h2>
+
+          {/* ✅ UPDATED HEADER WITH BADGE */}
+          <h2 className="font-display italic text-xl text-paper mb-5 hidden md:block">
+            Welcome back
+            {unreadCount > 0 && (
+              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </h2>
 
           <nav className="space-y-1">
             {links.map((link) => {
@@ -100,6 +128,7 @@ const DashboardLayout = ({ children }) => {
               ← Back to site
             </Link>
           </div>
+
         </div>
       </aside>
 

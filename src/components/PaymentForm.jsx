@@ -86,6 +86,7 @@ const PaymentForm = ({ bookingDraft }) => {
 
     if (paymentIntent.status === 'succeeded') {
       try {
+        console.log('Booking draft being sent:', bookingDraft)
         const bookingRes = await axiosSecure.post('/bookings', {
           propertyId: bookingDraft.propertyId,
           propertyTitle: bookingDraft.propertyTitle,
@@ -130,11 +131,18 @@ const PaymentForm = ({ bookingDraft }) => {
 
         router.push('/payment/success')
       } catch (error) {
-        console.error(error)
-
-        toast.error(
-          'Payment succeeded but booking failed to save. Contact support.'
-        )
+        const errorMessage = error.response?.data?.message || 'Booking save failed'
+        
+        console.error('Booking save error:', errorMessage)
+        
+        // ✅ Display user-friendly error messages
+        if (errorMessage === 'This property booked by you') {
+          toast.error('You already have an active booking for this property')
+        } else if (errorMessage === 'This property already booked for this date') {
+          toast.error('This property is already booked for that date. Please choose another date.')
+        } else {
+          toast.error(errorMessage)
+        }
       }
     }
 
