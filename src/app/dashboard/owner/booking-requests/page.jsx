@@ -53,6 +53,62 @@ const BookingRequests = () => {
     return `px-2.5 py-1 rounded-sm text-xs font-mono uppercase tracking-wide ${styles[status]}`
   }
 
+  const TenantAvatar = ({ booking, size = 60 }) => (
+    booking.tenantPhoto ? (
+      <img
+        src={booking.tenantPhoto}
+        alt={booking.tenantName}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          minWidth: `${size}px`,
+          maxWidth: `${size}px`,
+          minHeight: `${size}px`,
+          maxHeight: `${size}px`,
+          objectFit: 'cover',
+          borderRadius: '4px',
+        }}
+      />
+    ) : (
+      <div style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        minWidth: `${size}px`,
+        backgroundColor: '#E3E8E5',
+        borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '11px',
+        color: '#5C6B61',
+      }}>
+        {booking.tenantName?.charAt(0).toUpperCase()}
+      </div>
+    )
+  )
+
+  const ActionButtons = ({ booking }) => (
+    booking.bookingStatus === 'pending' ? (
+      <div className="flex gap-2">
+        <button
+          onClick={() => handleStatusChange(booking._id, 'approved')}
+          className="px-3 py-1.5 bg-clay text-paper text-xs font-medium rounded-sm hover:bg-clay-dark transition-colors"
+        >
+          Approve
+        </button>
+
+        <button
+          onClick={() => handleStatusChange(booking._id, 'rejected')}
+          className="px-3 py-1.5 border border-line text-xs font-medium rounded-sm hover:border-ink transition-colors"
+        >
+          Reject
+        </button>
+      </div>
+    ) : (
+      <span className="text-xs text-muted">No actions</span>
+    )
+  )
+
   if (loading) {
     return <LoadingSpinner text="Loading requests..." />
   }
@@ -74,165 +130,114 @@ const BookingRequests = () => {
           </p>
         </div>
       ) : (
-        <div className="border border-line rounded-sm overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-ink text-paper">
-              <tr>
-                <th className="text-left px-4 py-3 font-medium">
-                  Tenant
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Property
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Amount
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Status
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {bookings.map((booking) => (
-                <tr
-                  key={booking._id}
-                  className="border-t border-line"
-                >
-                  {/* Tenant Info */}
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {booking.tenantPhoto ? (
-  <img
-    src={booking.tenantPhoto}
-    alt={booking.tenantName}
-    style={{
-      width: '60px',
-                          height: '60px',
-                          minWidth: '60px',
-                          maxWidth: '60px',
-                          minHeight: '60px',
-                          maxHeight: '60px',
-                          objectFit: 'cover',
-                          borderRadius: '4px',
-    }}
-  />
-) : (
-  <div style={{
-    width: '60px',
-                          height: '60px',
-                          backgroundColor: '#E3E8E5',
-                          borderRadius: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '11px',
-                          color: '#5C6B61',
-  }}>
-    {booking.tenantName?.charAt(0).toUpperCase()}
-  </div>
-)}
-
-                      <div>
-                        <p className="text-ink font-medium">
-                          {booking.tenantName}
-                        </p>
-
-                        <p className="text-xs text-muted">
-                          {booking.tenantEmail}
-                        </p>
-
-                        {booking.moveInDate && (
-                          <p className="text-xs text-clay mt-0.5">
-                            📅 Move-in:{' '}
-                            {new Date(
-                              booking.moveInDate
-                            ).toLocaleDateString()}
-                          </p>
-                        )}
-
-                        {booking.moveOutDate && (
-                          <p className="text-xs text-clay">
-                            📅 Move-out:{' '}
-                            {new Date(
-                              booking.moveOutDate
-                            ).toLocaleDateString()}
-                          </p>
-                        )}
-
-                        {booking.contactNumber && (
-                          <p className="text-xs text-muted">
-                            📞 {booking.contactNumber}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Property */}
-                  <td className="px-4 py-3 text-muted max-w-[220px] truncate">
-                    {booking.propertyTitle}
-                  </td>
-
-                  {/* Amount */}
-                  <td className="px-4 py-3 text-ink">
-                    ${booking.amount}
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-4 py-3">
-                    <span
-                      className={statusBadge(
-                        booking.bookingStatus
-                      )}
-                    >
-                      {booking.bookingStatus}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3">
-                    {booking.bookingStatus ===
-                    'pending' ? (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() =>
-                            handleStatusChange(
-                              booking._id,
-                              'approved'
-                            )
-                          }
-                          className="px-3 py-1.5 bg-clay text-paper text-xs font-medium rounded-sm hover:bg-clay-dark transition-colors"
-                        >
-                          Approve
-                        </button>
-
-                        <button
-                          onClick={() =>
-                            handleStatusChange(
-                              booking._id,
-                              'rejected'
-                            )
-                          }
-                          className="px-3 py-1.5 border border-line text-xs font-medium rounded-sm hover:border-ink transition-colors"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-xs text-muted">
-                        No actions
-                      </span>
-                    )}
-                  </td>
+        <>
+          {/* Table — desktop only (1024px and up) */}
+          <div className="hidden lg:block border border-line rounded-sm overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-ink text-paper">
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium">Tenant</th>
+                  <th className="text-left px-4 py-3 font-medium">Property</th>
+                  <th className="text-left px-4 py-3 font-medium">Amount</th>
+                  <th className="text-left px-4 py-3 font-medium">Status</th>
+                  <th className="text-left px-4 py-3 font-medium">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+
+              <tbody>
+                {bookings.map((booking) => (
+                  <tr key={booking._id} className="border-t border-line">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <TenantAvatar booking={booking} size={60} />
+
+                        <div>
+                          <p className="text-ink font-medium">{booking.tenantName}</p>
+                          <p className="text-xs text-muted">{booking.tenantEmail}</p>
+
+                          {booking.moveInDate && (
+                            <p className="text-xs text-clay mt-0.5">
+                              📅 Move-in: {new Date(booking.moveInDate).toLocaleDateString()}
+                            </p>
+                          )}
+
+                          {booking.moveOutDate && (
+                            <p className="text-xs text-clay">
+                              📅 Move-out: {new Date(booking.moveOutDate).toLocaleDateString()}
+                            </p>
+                          )}
+
+                          {booking.contactNumber && (
+                            <p className="text-xs text-muted">📞 {booking.contactNumber}</p>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-4 py-3 text-muted max-w-[220px] truncate">
+                      {booking.propertyTitle}
+                    </td>
+
+                    <td className="px-4 py-3 text-ink">${booking.amount}</td>
+
+                    <td className="px-4 py-3">
+                      <span className={statusBadge(booking.bookingStatus)}>
+                        {booking.bookingStatus}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <ActionButtons booking={booking} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cards — mobile and tablet (below 1024px) */}
+          <div className="lg:hidden space-y-3">
+            {bookings.map((booking) => (
+              <div key={booking._id} className="border border-line rounded-sm p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <TenantAvatar booking={booking} size={56} />
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-ink font-medium truncate">{booking.tenantName}</p>
+                    <p className="text-xs text-muted truncate">{booking.tenantEmail}</p>
+                    {booking.contactNumber && (
+                      <p className="text-xs text-muted truncate">📞 {booking.contactNumber}</p>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-sm text-ink truncate mb-2">{booking.propertyTitle}</p>
+
+                {(booking.moveInDate || booking.moveOutDate) && (
+                  <div className="text-xs text-clay space-y-0.5 mb-2">
+                    {booking.moveInDate && (
+                      <p>📅 Move-in: {new Date(booking.moveInDate).toLocaleDateString()}</p>
+                    )}
+                    {booking.moveOutDate && (
+                      <p>📅 Move-out: {new Date(booking.moveOutDate).toLocaleDateString()}</p>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-ink font-semibold">${booking.amount}</p>
+                  <span className={statusBadge(booking.bookingStatus)}>
+                    {booking.bookingStatus}
+                  </span>
+                </div>
+
+                <div className="pt-3 border-t border-line">
+                  <ActionButtons booking={booking} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

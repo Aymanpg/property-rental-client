@@ -34,6 +34,32 @@ const MyBookings = () => {
     }`
   }
 
+  const PropertyThumb = ({ booking, size = 50 }) => (
+    booking.propertyImage ? (
+      <img
+        src={booking.propertyImage}
+        alt={booking.propertyTitle}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          minWidth: `${size}px`,
+          objectFit: 'cover',
+          borderRadius: '4px'
+        }}
+      />
+    ) : (
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          minWidth: `${size}px`,
+          backgroundColor: '#E3E8E5',
+          borderRadius: '4px'
+        }}
+      />
+    )
+  )
+
   if (loading) return <LoadingSpinner text="Loading bookings..." />
 
   return (
@@ -52,89 +78,85 @@ const MyBookings = () => {
           </p>
         </div>
       ) : (
-        <div className="border border-line rounded-sm overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-ink text-paper">
-              <tr>
-                {/* ✅ UPDATED COLUMN */}
-                <th className="text-left px-4 py-3 font-medium">Property</th>
+        <>
+          {/* Table — desktop only (1024px and up) */}
+          <div className="hidden lg:block border border-line rounded-sm overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-ink text-paper">
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium">Property</th>
+                  <th className="text-left px-4 py-3 font-medium">Booking Date</th>
+                  <th className="text-left px-4 py-3 font-medium">Amount Paid</th>
+                  <th className="text-left px-4 py-3 font-medium">Booking Status</th>
+                  <th className="text-left px-4 py-3 font-medium">Payment Status</th>
+                </tr>
+              </thead>
 
-                <th className="text-left px-4 py-3 font-medium">
-                  Booking Date
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Amount Paid
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Booking Status
-                </th>
-                <th className="text-left px-4 py-3 font-medium">
-                  Payment Status
-                </th>
-              </tr>
-            </thead>
+              <tbody>
+                {bookings.map((booking) => (
+                  <tr key={booking._id} className="border-t border-line">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <PropertyThumb booking={booking} size={50} />
+                        <span className="font-medium text-ink">
+                          {booking.propertyTitle}
+                        </span>
+                      </div>
+                    </td>
 
-            <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking._id} className="border-t border-line">
+                    <td className="px-4 py-3 text-muted">
+                      {new Date(booking.createdAt).toLocaleDateString()}
+                    </td>
 
-                  {/* ✅ UPDATED ROW WITH IMAGE */}
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {booking.propertyImage ? (
-                        <img
-                          src={booking.propertyImage}
-                          alt={booking.propertyTitle}
-                          style={{
-                            width: '50px',
-                            height: '50px',
-                            minWidth: '50px',
-                            objectFit: 'cover',
-                            borderRadius: '4px'
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '50px',
-                            height: '50px',
-                            backgroundColor: '#E3E8E5',
-                            borderRadius: '4px'
-                          }}
-                        />
-                      )}
+                    <td className="px-4 py-3 text-ink">${booking.amount}</td>
 
-                      <span className="font-medium text-ink">
-                        {booking.propertyTitle}
+                    <td className="px-4 py-3">
+                      <span className={statusBadge(booking.bookingStatus)}>
+                        {booking.bookingStatus}
                       </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td className="px-4 py-3 text-muted">
-                    {new Date(booking.createdAt).toLocaleDateString()}
-                  </td>
+                    <td className="px-4 py-3">
+                      <span className={statusBadge(booking.paymentStatus)}>
+                        {booking.paymentStatus}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-                  <td className="px-4 py-3 text-ink">
-                    ${booking.amount}
-                  </td>
+          {/* Cards — mobile and tablet (below 1024px) */}
+          <div className="lg:hidden space-y-3">
+            {bookings.map((booking) => (
+              <div key={booking._id} className="border border-line rounded-sm p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <PropertyThumb booking={booking} size={50} />
 
-                  <td className="px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-ink truncate">{booking.propertyTitle}</p>
+                    <p className="text-xs text-muted">
+                      {new Date(booking.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-ink font-semibold">${booking.amount}</p>
+                  <div className="flex items-center gap-2">
                     <span className={statusBadge(booking.bookingStatus)}>
                       {booking.bookingStatus}
                     </span>
-                  </td>
-
-                  <td className="px-4 py-3">
                     <span className={statusBadge(booking.paymentStatus)}>
                       {booking.paymentStatus}
                     </span>
-                  </td>
-
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
