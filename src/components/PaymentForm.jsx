@@ -132,9 +132,9 @@ const PaymentForm = ({ bookingDraft }) => {
         router.push('/payment/success')
       } catch (error) {
         const errorMessage = error.response?.data?.message || 'Booking save failed'
-        
-        console.error('Booking save error:', errorMessage)
-        
+
+        // console.error('Booking save error:', errorMessage)
+
         // ✅ Display user-friendly error messages
         if (errorMessage === 'This property booked by you') {
           toast.error('You already have an active booking for this property')

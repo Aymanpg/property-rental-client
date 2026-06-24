@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../../../../components/LoadingSpinner'
+import useAuth from '@/hooks/useAuth'
 const AllUsers = () => {
   const axiosSecure = useAxiosSecure()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+  const { dbUser } = useAuth();
 
   const fetchUsers = () => {
     axiosSecure.get('/users')
@@ -17,7 +19,9 @@ const AllUsers = () => {
   }
 
   useEffect(() => {
-    fetchUsers()
+    if (dbUser?.role === 'admin') {
+      fetchUsers()
+    }
   }, [])
 
   const handleRoleChange = async (id, role) => {
@@ -60,23 +64,23 @@ const AllUsers = () => {
           <tbody>
             {users.map((user) => (
               <tr key={user._id} className="border-t border-line hover:bg-moss/5 transition-colors">
-                 <td className="px-4 py-3">
-  <div className="flex items-center gap-3">
-    {user.photo ? (
-      <img
-        src={user.photo}
-        alt={user.name || 'User'}
-        className="w-10 h-10 rounded-full object-cover border border-line shrink-0"
-        style={{ minWidth: '40px', maxWidth: '40px', minHeight: '40px', maxHeight: '40px' }}
-      />
-    ) : (
-      <div className="w-10 h-10 rounded-full bg-clay/20 text-clay flex items-center justify-center text-sm font-semibold shrink-0">
-        {user.name?.charAt(0).toUpperCase()}
-      </div>
-    )}
-    <span className="font-medium text-ink">{user.name}</span>
-  </div>
-</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    {user.photo ? (
+                      <img
+                        src={user.photo}
+                        alt={user.name || 'User'}
+                        className="w-10 h-10 rounded-full object-cover border border-line shrink-0"
+                        style={{ minWidth: '40px', maxWidth: '40px', minHeight: '40px', maxHeight: '40px' }}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-clay/20 text-clay flex items-center justify-center text-sm font-semibold shrink-0">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="font-medium text-ink">{user.name}</span>
+                  </div>
+                </td>
 
 
 

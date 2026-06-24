@@ -11,13 +11,13 @@ import {
 } from 'firebase/auth'
 import { auth, googleProvider } from '../lib/firebase'
 import axios from 'axios'
-import axiosSecure from '../lib/axiosInstance' // 👈 adjust path to wherever this file actually lives
 
 export const AuthContext = createContext(null)
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [dbUser, setDbUser] = useState(null)
+  const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -32,6 +32,7 @@ const AuthProvider = ({ children }) => {
     })
 
     localStorage.setItem('token', res.data.token)
+    setToken(res.data.token)
     setDbUser(res.data.user)
     return result
   }
@@ -47,6 +48,7 @@ const AuthProvider = ({ children }) => {
     })
 
     localStorage.setItem('token', res.data.token)
+    setToken(res.data.token)
     setDbUser(res.data.user)
     return result
   }
@@ -62,31 +64,37 @@ const AuthProvider = ({ children }) => {
     })
 
     localStorage.setItem('token', res.data.token)
+    setToken(res.data.token)
     setDbUser(res.data.user)
     return result
   }
 
   const logoutUser = () => {
     localStorage.removeItem('token')
+    setToken(null)
     setDbUser(null)
     return signOut(auth)
   }
 
   useEffect(() => {
+    setToken(localStorage.getItem('token'))
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
 
-      if (currentUser) {
-        const token = localStorage.getItem('token')
-        if (token) {
-          try {
-            const res = await axiosSecure.get(`/users/${currentUser.email}`)
-            setDbUser(res.data)
-          } catch (error) {
-            console.log('Error fetching db user:', error.message)
-          }
+      if (currentUser && token) {
+        try {
+          const res = await axios.get(`${apiUrl}/users/${currentUser.email}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+          setDbUser(res.data)
+        } catch (error) {
+          console.log('Error fetching db user:', error.message)
         }
-        // if no token yet, loginUser/googleLogin/registerUser will set dbUser themselves
       } else {
         setDbUser(null)
       }
@@ -95,11 +103,12 @@ const AuthProvider = ({ children }) => {
     })
 
     return () => unsubscribe()
-  }, [apiUrl])
+  }, [apiUrl, token])
 
   const authInfo = {
     user,
     dbUser,
+    token,
     loading,
     registerUser,
     loginUser,
@@ -115,3 +124,4 @@ const AuthProvider = ({ children }) => {
 }
 
 export default AuthProvider
+ 

@@ -28,7 +28,7 @@ const adminLinks = [
 ]
 
 const DashboardLayout = ({ children }) => {
-  const { user, dbUser, loading } = useAuth()
+  const { user, dbUser, loading, token } = useAuth()
   const axiosSecure = useAxiosSecure()
 
   const pathname = usePathname()
@@ -46,7 +46,7 @@ const DashboardLayout = ({ children }) => {
 
   // ✅ NEW: fetch notifications
   useEffect(() => {
-    if (!user?.email) return
+    if (!user?.email || !token) return
 
     axiosSecure.get(`/notifications/${user.email}`)
       .then(res => {
@@ -54,7 +54,7 @@ const DashboardLayout = ({ children }) => {
         setUnreadCount(unread)
       })
       .catch(err => console.log('Notification error:', err.message))
-  }, [user, axiosSecure])
+  }, [user, token, axiosSecure])
 
   if (loading || !user) {
     return (
@@ -141,3 +141,4 @@ const DashboardLayout = ({ children }) => {
 }
 
 export default DashboardLayout
+ 
