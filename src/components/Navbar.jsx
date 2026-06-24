@@ -147,15 +147,19 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <span className={`block w-6 h-0.5 bg-ink transition-transform ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-ink transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-ink transition-transform ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-        </button>
+        {/* Mobile: bell (always visible) + hamburger */}
+<div className="md:hidden flex items-center gap-1">
+  {user && <NotificationBell />}
+
+  <button
+    className="flex flex-col gap-1.5 p-2"
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    <span className={`block w-6 h-0.5 bg-ink transition-transform ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+    <span className={`block w-6 h-0.5 bg-ink transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
+    <span className={`block w-6 h-0.5 bg-ink transition-transform ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+  </button>
+</div>
       </nav>
 
       {/* Mobile menu */}

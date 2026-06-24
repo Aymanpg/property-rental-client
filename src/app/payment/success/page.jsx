@@ -6,7 +6,7 @@ const PaymentSuccess = () => {
   return (
     <div className="max-w-xl mx-auto px-6 py-24 text-center">
       <div className="w-16 h-16 bg-clay/10 text-clay rounded-full flex items-center justify-center mx-auto text-3xl">✓</div>
-      <h1 className="font-display italic text-3xl text-ink mt-6">Booking confirmed!</h1>
+      <h1 className="font-display italic text-3xl text-ink mt-6">Booking is submitted!</h1>
       <p className="text-muted mt-2">Your payment was successful. The owner will review your booking shortly.</p>
 
       <div className="flex gap-3 justify-center mt-8">
