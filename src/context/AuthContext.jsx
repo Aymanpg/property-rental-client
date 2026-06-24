@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth'
 import { auth, googleProvider } from '../lib/firebase'
 import axios from 'axios'
+import axiosSecure from '../lib/axiosInstance' // 👈 adjust path to wherever this file actually lives
 
 export const AuthContext = createContext(null)
 
@@ -76,16 +77,16 @@ const AuthProvider = ({ children }) => {
       setUser(currentUser)
 
       if (currentUser) {
-        try {
-          const res = await axios.get(`${apiUrl}/users/${currentUser.email}`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          })
-          setDbUser(res.data)
-        } catch (error) {
-          console.log('Error fetching db user:', error.message)
+        const token = localStorage.getItem('token')
+        if (token) {
+          try {
+            const res = await axiosSecure.get(`/users/${currentUser.email}`)
+            setDbUser(res.data)
+          } catch (error) {
+            console.log('Error fetching db user:', error.message)
+          }
         }
+        // if no token yet, loginUser/googleLogin/registerUser will set dbUser themselves
       } else {
         setDbUser(null)
       }

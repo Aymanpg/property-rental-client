@@ -6,7 +6,7 @@ import useAuth from '../hooks/useAuth'
 import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const NotificationBell = () => {
-  const { user } = useAuth()
+  const { user, dbUser } = useAuth()
   const axiosSecure = useAxiosSecure()
   const [notifications, setNotifications] = useState([])
   const [open, setOpen] = useState(false)
@@ -15,8 +15,8 @@ const NotificationBell = () => {
   const unreadCount = notifications.filter(n => !n.isRead).length
 
   const fetchNotifications = () => {
-    if (!user?.email) return
-    axiosSecure.get(`/notifications/${user.email}`)
+    if (!dbUser?.email) return
+    axiosSecure.get(`/notifications/${dbUser.email}`)
       .then(res => setNotifications(res.data))
       .catch(err => console.log('Error fetching notifications:', err.message))
   }
@@ -27,7 +27,7 @@ const NotificationBell = () => {
     const interval = setInterval(fetchNotifications, 30000)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [dbUser])
 
   // Click outside to close
   useEffect(() => {
@@ -41,8 +41,9 @@ const NotificationBell = () => {
   }, [])
 
   const handleMarkAllRead = async () => {
+    if (!dbUser?.email) return
     try {
-      await axiosSecure.patch(`/notifications/${user.email}/read-all`)
+      await axiosSecure.patch(`/notifications/${dbUser.email}/read-all`)
       fetchNotifications()
     } catch (error) {
       console.log('Error marking notifications as read:', error.message)
