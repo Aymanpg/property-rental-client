@@ -75,7 +75,7 @@ const Navbar = () => {
               href="/register"
               className="px-5 py-2.5 bg-ink text-paper text-sm font-semibold rounded-sm hover:bg-clay transition-colors"
             >
-              Get started
+              Register
             </Link>
           ) : (
             <>
@@ -176,7 +176,7 @@ const Navbar = () => {
                 onClick={() => setMenuOpen(false)}
                 className="px-5 py-2.5 bg-ink text-paper text-sm font-semibold rounded-sm w-fit"
               >
-                Get started
+                Register
               </Link>
             </>
           ) : (
