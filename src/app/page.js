@@ -80,7 +80,7 @@ const Home = () => {
       transition={{ duration: 0.6, delay: 0.1 }}
       className="font-display italic text-5xl md:text-6xl lg:text-7xl leading-tight text-ink max-w-3xl"
     >
-      Renting, made <br /> honest and simple.
+      Renting, made <br /> honest and simple
     </motion.h1>
 
     <motion.p
@@ -109,7 +109,7 @@ const Home = () => {
           value={search.location}
           onChange={handleSearchChange}
           placeholder="Location"
-          className="w-full px-4 py-3 rounded-md border border-line text-ink bg bg-paper focus:outline-none focus:border-clay"
+          className="w-full px-4 py-3 rounded-md border border-line text-ink bg-paper focus:outline-none focus:border-clay"
         />
 
         <select
