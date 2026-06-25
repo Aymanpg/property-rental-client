@@ -60,7 +60,7 @@ const Home = () => {
 
   {/* Background Image */}
   <div
-    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
+    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-75"
     style={{ backgroundImage: "url('/images/hero-bg.png')" }}
   />
 
