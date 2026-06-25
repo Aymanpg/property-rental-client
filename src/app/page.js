@@ -56,102 +56,115 @@ const Home = () => {
   return (
     <div>
       {/* Hero Banner */}
-      <section className="relative overflow-hidden bg-paper border-[12px] border-ink">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-24 relative z-10">
+<section className="relative overflow-hidden bg-paper border-[12px] border-ink">
 
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block font-mono text-xs uppercase tracking-[0.25em] text-clay mb-5"
-          >
-            — Find your next address
-          </motion.span>
+  {/* Background Image */}
+  <div className="absolute inset-0">
+    <img
+      src="/images/hero-bg.png"
+      alt="Featured properties collage"
+      className="w-full h-full object-cover"
+    />
+    {/* Dark overlay so text stays readable over the photo */}
+    <div className="absolute inset-0 bg-ink/70" />
+  </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display italic text-5xl md:text-6xl lg:text-7xl leading-tight text-ink max-w-3xl"
-          >
-            Renting, made honest and simple.
-          </motion.h1>
+  <div className="max-w-7xl mx-auto px-6 md:px-10 py-24 relative z-10">
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 text-muted max-w-xl text-base leading-relaxed"
-          >
-            Browse verified listings, book securely online, and skip the
-            back-and-forth. Built for tenants and property owners alike.
-          </motion.p>
+    <motion.span
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="inline-block font-mono text-xs uppercase tracking-[0.25em] text-clay mb-5"
+    >
+      — Find your next address
+    </motion.span>
 
-          {/* Search Section */}
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            onSubmit={handleSearchSubmit}
-            className="mt-12 bg-paper border-2 border-ink rounded-lg p-4 shadow-xl"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+    <motion.h1
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+      className="font-display italic text-5xl md:text-6xl lg:text-7xl leading-tight text-black max-w-3xl"
+    >
+      Renting, made <br/>
+      honest and simple
+    </motion.h1>
 
-              <input
-                type="text"
-                name="location"
-                value={search.location}
-                onChange={handleSearchChange}
-                placeholder="Location"
-                className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
-              />
+    <motion.p
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="mt-6 text-paper/80 max-w-xl text-base leading-relaxed"
+    >
+      Browse verified listings, book securely online, and skip the
+      back-and-forth. Built for tenants and property owners alike.
+    </motion.p>
 
-              <select
-                name="propertyType"
-                value={search.propertyType}
-                onChange={handleSearchChange}
-                className="w-full px-4 py-3 rounded-md border border-line text-ink bg-paper focus:outline-none focus:border-clay"
-              >
-                <option value="">Property Type</option>
-                <option value="apartment">Apartment</option>
-                <option value="house">House</option>
-                <option value="villa">Villa</option>
-                <option value="studio">Studio</option>
-                <option value="office">Office</option>
-              </select>
+    {/* Search Section */}
+    <motion.form
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      onSubmit={handleSearchSubmit}
+      className="mt-12 bg-paper border-2 border-ink rounded-lg p-4 shadow-xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
 
-              <input
-                type="number"
-                name="minPrice"
-                value={search.minPrice}
-                onChange={handleSearchChange}
-                placeholder="Min Price"
-                className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
-              />
+        <input
+          type="text"
+          name="location"
+          value={search.location}
+          onChange={handleSearchChange}
+          placeholder="Location"
+          className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
+        />
 
-              <input
-                type="number"
-                name="maxPrice"
-                value={search.maxPrice}
-                onChange={handleSearchChange}
-                placeholder="Max Price"
-                className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
-              />
+        <select
+          name="propertyType"
+          value={search.propertyType}
+          onChange={handleSearchChange}
+          className="w-full px-4 py-3 rounded-md border border-line text-ink bg-paper focus:outline-none focus:border-clay"
+        >
+          <option value="">Property Type</option>
+          <option value="apartment">Apartment</option>
+          <option value="house">House</option>
+          <option value="villa">Villa</option>
+          <option value="studio">Studio</option>
+          <option value="office">Office</option>
+        </select>
 
-              <button
-                type="submit"
-                className="w-full px-6 py-3 bg-ink text-paper font-semibold rounded-md hover:bg-clay transition duration-300"
-              >
-                Search
-              </button>
-            </div>
-          </motion.form>
-        </div>
+        <input
+          type="number"
+          name="minPrice"
+          value={search.minPrice}
+          onChange={handleSearchChange}
+          placeholder="Min Price"
+          className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
+        />
 
-        {/* Decorative Blur */}
-        <div className="absolute -right-24 -bottom-24 w-[420px] h-[420px] rounded-full bg-moss/30 blur-3xl" />
-        <div className="absolute -left-24 -top-24 w-[300px] h-[300px] rounded-full bg-clay/20 blur-3xl" />
-      </section>
+        <input
+          type="number"
+          name="maxPrice"
+          value={search.maxPrice}
+          onChange={handleSearchChange}
+          placeholder="Max Price"
+          className="w-full px-4 py-3 rounded-md border border-line text-ink focus:outline-none focus:border-clay"
+        />
+
+        <button
+          type="submit"
+          className="w-full px-6 py-3 bg-ink text-paper font-semibold rounded-md hover:bg-clay transition duration-300"
+        >
+          Search
+        </button>
+      </div>
+    </motion.form>
+  </div>
+
+  {/* Decorative Blur */}
+  <div className="absolute -right-24 -bottom-24 w-[420px] h-[420px] rounded-full bg-moss/30 blur-3xl z-10" />
+  <div className="absolute -left-24 -top-24 w-[300px] h-[300px] rounded-full bg-clay/20 blur-3xl z-10" />
+</section>
 
       {/* Featured Properties */}
       <section className="max-w-7xl mx-auto px-6 py-20">
