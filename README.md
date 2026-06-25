@@ -2,7 +2,7 @@
 
 > A transparent marketplace connecting tenants and property owners — find a place, list a place, book it securely.
 
-![RentEase Banner](./public/images/hero-bg.png)
+![RentEase Banner](./public/images/bannerforReadme.png)
 
 ---
 
